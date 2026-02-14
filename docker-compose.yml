@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ticket_manager_db
+    environment:
+      POSTGRES_DB: ticket_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8000:5432"
+    volumes:
+      - tm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ticket_manager"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  tm_pgdata:

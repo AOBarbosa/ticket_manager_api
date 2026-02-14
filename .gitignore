@@ -1,0 +1,82 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Bytecode
+*.pyc
+*.pyo
+
+# =========================
+# Virtual Environment
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# SQLite (caso use em dev)
+# =========================
+*.db
+*.sqlite3
+
+# =========================
+# Alembic (migrations cache)
+# =========================
+alembic/versions/__pycache__/
+
+# =========================
+# Docker
+# =========================
+tm_pgdata/
+pgdata/
+*.tar
+
+# =========================
+# IDEs
+# =========================
+# VSCode
+.vscode/
+
+# PyCharm / IntelliJ
+.idea/
+
+# MacOS
+.DS_Store
+
+# =========================
+# Test / Coverage
+# =========================
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.bak
+*.swp
