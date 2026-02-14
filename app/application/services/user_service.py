@@ -1,32 +1,29 @@
-from pydantic import EmailStr
-
-from app.application.dto.user_dto import CreateUserRequestDTO, UserResponseDTO
+from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.domain.entities.user import User
+from app.domain.mappers.users_mapper import UserMapper
 from app.infra.repositories.user_repository import UserRepository
 
 class UserService:
-    def __init__(self, repo: UserRepository) -> None:
-        self.repo = repo
+    """"
+    Service class for managing User entities.
+    """
 
-    def save(self, dto: CreateUserRequestDTO) -> UserResponseDTO:
-        user = User(
-            first_name=dto.first_name.strip(),
-            last_name=dto.last_name.strip(),
-            date_of_birth=dto.date_of_birth,
-            cpf=dto.cpf.strip(),
-            email=dto.email.strip().lower(),
-            password=dto.password,
-        )
+    def __init__(self, repository: UserRepository, mapper: UserMapper) -> None:
+        self.repository = repository
+        self.mapper = mapper
 
-        saved = self.repo.create(user)
+    def create(self, dto: CreateUserRequestDTO) -> UserResponseDTO:
+        user = self.mapper.to_entity(dto)
 
-        return UserResponseDTO(
-            id=saved.id,
-            first_name=saved.first_name,
-            last_name=saved.last_name,
-            date_of_birth=saved.date_of_birth,
-            cpf=saved.cpf,
-            email=saved.email,
-            created_at=saved.created_at,
-            updated_at=saved.updated_at,
-        )
+        saved = self.repository.create(user)
+
+        user_dto = self.mapper.to_dto(saved)
+
+        return user_dto
+
+    def get_by_id(self, user_id: int) -> UserResponseDTO:
+        user = self.repository.get_by_id(user_id)
+
+        user_dto = self.mapper.to_dto(user)
+
+        return user_dto
