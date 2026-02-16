@@ -1,26 +1,45 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.application.services.user_service import UserService
 from app.presentation.api.deps import get_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+
 @router.post("", response_model=UserResponseDTO, status_code=201)
 def create_user(body: CreateUserRequestDTO, service: UserService = Depends(get_user_service)):
     return service.create(body)
 
-@router.get("", response_model=list[UserResponseDTO])
-def list_users(limit: int = 50, offset: int = 0, service: UserService = Depends(get_user_service)):
-    users = service.repository.get_all()
-    return [
-        UserResponseDTO(
-            id=u.id, first_name=u.first_name, last_name=u.last_name,
-            date_of_birth=u.date_of_birth, cpf=u.cpf, email=u.email,
-            created_at=u.created_at, updated_at=u.updated_at
-        )
-        for u in users
-    ]
 
-@router.get(f"/{id}", response_model=UserResponseDTO)
+@router.get("", response_model=list[UserResponseDTO], status_code=status.HTTP_200_OK)
+def list_users(service: UserService = Depends(get_user_service)):
+    return service.get_all()
+
+
+@router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user_by_id(user_id: int, service: UserService = Depends(get_user_service)):
-    return service.get_by_id(user_id)
+    user = service.get_by_id(user_id)
+
+    return user
+
+@router.put("/{user_id}", response_model=UserResponseDTO)
+def update_user(user_id: int, body: CreateUserRequestDTO, service: UserService = Depends(get_user_service)):
+    user = service.update(user_id, body)
+    return user
+
+@router.delete("/{user_id}", status_code=204)
+def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
+    service.delete(user_id)
+
+
+@router.get("/by-email", response_model=UserResponseDTO)
+def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
+    user = service.get_by_email(email)
+
+    return user
+
+@router.get("/by-cpf", response_model=UserResponseDTO)
+def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
+    user = service.get_by_cpf(email)
+
+    return user

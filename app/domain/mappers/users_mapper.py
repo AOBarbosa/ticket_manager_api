@@ -6,8 +6,6 @@ from app.infra.repositories.user_repository import UserRepository
 
 
 class UserMapper:
-    def __init__(self, repository: UserRepository) -> None:
-        self.repository = repository
 
     def to_entity(self, dto: CreateUserRequestDTO) -> User:
         """
