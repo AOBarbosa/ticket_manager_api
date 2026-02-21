@@ -24,3 +24,5 @@ class AbstractEntity(SQLModel):
             onupdate=func.now(),
         )
     )
+
+    is_active: bool = Field(default=True, nullable=False)

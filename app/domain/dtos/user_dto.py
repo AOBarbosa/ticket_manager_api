@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import date, datetime
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
+from app.domain.enums.roles_enum import UserRole
+
 
 class CreateUserRequestDTO(BaseModel):
     """
@@ -26,6 +28,7 @@ class CreateUserRequestDTO(BaseModel):
                 "cpf": "12345678901",
                 "email": "john.doe@email.com",
                 "password": "StrongPass#123",
+                "role": "CUSTOMER",
             }
         }
     )
@@ -62,6 +65,7 @@ class CreateUserRequestDTO(BaseModel):
         description="User's password (plain text). Must be hashed before storing.",
         examples=["StrongPass#123"],
     )
+    role: UserRole = Field(default="CUSTOMER", description="User's role.")
 
 
 class UserResponseDTO(BaseModel):
@@ -103,6 +107,8 @@ class UserResponseDTO(BaseModel):
         description="User's email address.",
         examples=["john.doe@email.com"],
     )
+    role: UserRole = Field(description="User's role.", examples=["CUSTOMER"])
+    is_active: bool = Field(description="User's active status.")
     created_at: datetime = Field(
         description="Timestamp when the user was created (server-generated).",
         examples=["2026-02-13T12:34:56Z"],

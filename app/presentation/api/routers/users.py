@@ -1,13 +1,27 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.application.services.user_service import UserService
+from app.domain.entities.user import User
+from app.domain.enums.roles_enum import UserRole
+from app.presentation.api.deps.permissions import require_roles
 from app.presentation.api.deps.user_deps import get_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+@router.get("/admin-area")
+def admin_area(
+    user: Annotated[User, Depends(require_roles(UserRole.ADMIN))]
+):
+    return {"ok": True}
 
-@router.post("", response_model=UserResponseDTO, status_code=201)
-def create_user(body: CreateUserRequestDTO, service: UserService = Depends(get_user_service)):
+@router.post("", response_model=UserResponseDTO, status_code=status.HTTP_201_CREATED)
+def create_user(
+    body: CreateUserRequestDTO,
+    service: Annotated[UserService, Depends(get_user_service)],
+    _: Annotated[User, Depends(require_roles(UserRole.ADMIN))],
+):
     return service.create(body)
 
 

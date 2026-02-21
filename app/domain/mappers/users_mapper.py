@@ -22,6 +22,7 @@ class UserMapper:
             date_of_birth=dto.date_of_birth,
             cpf=dto.cpf.strip(),
             email=str(dto.email).strip().lower(),
+            role=dto.role,
         )
 
     def to_dto(self, entity: User) -> UserResponseDTO:
@@ -39,6 +40,8 @@ class UserMapper:
             date_of_birth=entity.date_of_birth,
             cpf=entity.cpf,
             email=entity.email,
+            role=entity.role,
+            is_active=entity.is_active,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
