@@ -85,6 +85,7 @@ class UserResponseDTO(BaseModel):
     )
     role: UserRole = Field(description="User's role.", examples=["CUSTOMER"])
     is_active: bool = Field(description="User's active status.")
+    first_access: bool = Field(description="User's first access.")
     created_at: datetime = Field(
         description="Timestamp when the user was created (server-generated).",
         examples=["2026-02-13T12:34:56Z"],

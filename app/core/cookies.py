@@ -1,14 +1,21 @@
 from fastapi import Response
 from app.core.config import settings
 
-def set_auth_cookies(response: Response, *, access_token: str, refresh_token: str) -> None:
+
+def _cookie_common_kwargs() -> dict:
     common = dict(
         httponly=True,
         secure=settings.COOKIE_SECURE,
         samesite=settings.COOKIE_SAMESITE,
-        domain=settings.COOKIE_DOMAIN,
         path="/",
     )
+    if settings.COOKIE_DOMAIN:
+        common["domain"] = settings.COOKIE_DOMAIN
+    return common
+
+
+def set_auth_cookies(response: Response, *, access_token: str, refresh_token: str) -> None:
+    common = _cookie_common_kwargs()
 
     response.set_cookie(
         key=settings.ACCESS_COOKIE_NAME,
@@ -24,10 +31,11 @@ def set_auth_cookies(response: Response, *, access_token: str, refresh_token: st
         **common,
     )
 
+
 def clear_auth_cookies(response: Response) -> None:
-    common = dict(
-        domain=settings.COOKIE_DOMAIN,
-        path="/",
-    )
+    common = {"path": "/"}
+    if settings.COOKIE_DOMAIN:
+        common["domain"] = settings.COOKIE_DOMAIN
+
     response.delete_cookie(settings.ACCESS_COOKIE_NAME, **common)
     response.delete_cookie(settings.REFRESH_COOKIE_NAME, **common)

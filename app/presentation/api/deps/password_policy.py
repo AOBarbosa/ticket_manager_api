@@ -8,8 +8,6 @@ ALLOWED_PATHS_WHEN_FORCED = {
     "/auth/change-password",
     "/auth/logout",
     "/auth/refresh",
-    "/users",
-    "/me",
 }
 
 def enforce_password_change(

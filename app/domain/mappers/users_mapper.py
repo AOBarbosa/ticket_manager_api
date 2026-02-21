@@ -10,11 +10,6 @@ class UserMapper:
     def to_entity(self, dto: CreateUserRequestDTO) -> User:
         """
         Maps CreateUserRequestDTO -> User (SQLModel entity).
-
-        Notes:
-          - Normalizes simple string fields (strip + lower email).
-          - Password is passed through as-is (hash it in service/use-case before calling this,
-            or adjust this mapper to accept a password_hash).
         """
         return User(
             first_name=dto.first_name.strip(),
@@ -28,10 +23,6 @@ class UserMapper:
     def to_dto(self, entity: User) -> UserResponseDTO:
         """
         Maps User (SQLModel entity) -> UserResponseDTO.
-
-        Notes:
-          - Does not expose password (response DTO doesn't contain it).
-          - Assumes created_at/updated_at are present (server defaults).
         """
         return UserResponseDTO(
             id=entity.id,
@@ -42,6 +33,7 @@ class UserMapper:
             email=entity.email,
             role=entity.role,
             is_active=entity.is_active,
+            first_access=entity.first_access,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )

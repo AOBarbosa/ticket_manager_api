@@ -1,8 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlmodel import SQLModel
-from app.core.db.engine import engine
 
 from app.presentation.api.routers.protected import protected_router
 from app.presentation.api.routers.users import router as users_router

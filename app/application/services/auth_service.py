@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from dataclasses import dataclass
 
-from jwt.exceptions import InvalidTokenError
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 from app.core.security import (
     verify_password,
@@ -26,6 +26,7 @@ class TokenPair:
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+    must_change_password: bool = False
 
 
 class AuthService:
@@ -59,7 +60,7 @@ class AuthService:
 
         self.refresh_tokens.upsert_for_user(user.id, hash_refresh_token(refresh))
 
-        return TokenPair(access_token=access, refresh_token=refresh)
+        return TokenPair(access_token=access, refresh_token=refresh, must_change_password=user.first_access)
 
     def logout(self, refresh_token: str) -> None:
         try:
@@ -103,24 +104,32 @@ class AuthService:
             sub=str(user_id), expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
 
-    def get_user_from_access_token(self, access_token: str) -> UserResponseDTO:
+    def get_user_from_access_token(self, token: str) -> UserResponseDTO:
         try:
-            payload = decode_token(access_token)
+            payload = decode_token(token)
+        except ExpiredSignatureError:
+            raise ValueError("token expired")
         except InvalidTokenError:
-            raise ValueError("Could not validate credentials")
+            raise ValueError("invalid token")
 
         if payload.get("type") != "access":
-            raise ValueError("Invalid access token type")
+            raise ValueError("invalid token type")
 
         sub = payload.get("sub")
-        if not sub or not str(sub).isdigit():
-            raise ValueError("Could not validate credentials")
+        if not sub:
+            raise ValueError("missing sub")
 
-        user = self.users.get_by_id(int(sub))
-        if user is None:
-            raise ValueError("Could not validate credentials")
+        try:
+            user_id = int(sub)
+        except (TypeError, ValueError):
+            raise ValueError("invalid sub")
 
-        user_dto = self.mapper.to_dto(user)
+        user_dto = self.mapper.to_dto(self.users.get_by_id(user_id))
+        if not user_dto:
+            raise ValueError("user not found")
+
+        if not user_dto.is_active:
+            raise ValueError("inactive user")
 
         return user_dto
 

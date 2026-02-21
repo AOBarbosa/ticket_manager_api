@@ -15,7 +15,10 @@ class AccessTokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-@router.post("/login", status_code=204)
+class LoginResponse(BaseModel):
+    must_change_password: bool
+
+@router.post("/login", response_model=LoginResponse)
 def login(
     response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -25,7 +28,7 @@ def login(
     try:
         pair = auth.login_with_email(email=email, password=form_data.password)
         set_auth_cookies(response, access_token=pair.access_token, refresh_token=pair.refresh_token)
-        return
+        return LoginResponse(must_change_password=pair.must_change_password)
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -10,11 +10,6 @@ from app.presentation.api.deps.user_deps import get_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.get("/admin-area")
-def admin_area(
-    user: Annotated[User, Depends(require_roles(UserRole.ADMIN))]
-):
-    return {"ok": True}
 
 @router.post("", response_model=UserResponseDTO, status_code=status.HTTP_201_CREATED)
 def create_user(
@@ -44,13 +39,3 @@ def update_user(user_id: int, body: CreateUserRequestDTO, service: UserService =
 def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
     service.delete(user_id)
 
-
-@router.get("/by-email", response_model=UserResponseDTO)
-def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
-    user = service.get_by_email(email)
-    return user
-
-@router.get("/by-cpf", response_model=UserResponseDTO)
-def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
-    user = service.get_by_cpf(email)
-    return user
