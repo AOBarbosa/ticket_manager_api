@@ -13,7 +13,3 @@ class UserRepository(AbstractRepository[User], ABC):
     @abstractmethod
     def find_by_cpf(self, cpf: str) -> User:
         pass
-
-    # @abstractmethod
-    # def find_me(self, user_id: int) -> User:
-    #     pass

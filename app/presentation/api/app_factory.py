@@ -13,7 +13,6 @@ from app.presentation.api.routers.me import router as me_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     import app.infra.orm.registry
-    SQLModel.metadata.create_all(engine)
     yield
 
 

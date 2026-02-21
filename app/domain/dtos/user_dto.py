@@ -9,14 +9,6 @@ from app.domain.enums.roles_enum import UserRole
 class CreateUserRequestDTO(BaseModel):
     """
     Data Transfer Object for creating a User.
-
-    Fields:
-        first_name: User's first name.
-        last_name: User's last name.
-        date_of_birth: User's date of birth.
-        cpf: Brazilian CPF (11–14 chars depending on formatting).
-        email: User's email address.
-        password: Plain password provided at creation time (should be hashed before persistence).
     """
 
     model_config = ConfigDict(
@@ -59,28 +51,12 @@ class CreateUserRequestDTO(BaseModel):
         description="User's email address.",
         examples=["andre.barbosa@email.com"],
     )
-    password: str = Field(
-        min_length=8,
-        max_length=255,
-        description="User's password (plain text). Must be hashed before storing.",
-        examples=["StrongPass#123"],
-    )
     role: UserRole = Field(default="CUSTOMER", description="User's role.")
 
 
 class UserResponseDTO(BaseModel):
     """
     Data Transfer Object for returning a User.
-
-    Fields:
-        id: Unique identifier of the user.
-        first_name: User's first name.
-        last_name: User's last name.
-        date_of_birth: User's date of birth.
-        cpf: Brazilian CPF identifier.
-        email: User's email address.
-        created_at: Timestamp when the user was created (server-generated).
-        updated_at: Timestamp of the last update (server-managed).
     """
 
     id: int = Field(

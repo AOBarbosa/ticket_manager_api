@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from dataclasses import dataclass
 
 from jwt.exceptions import InvalidTokenError
@@ -11,10 +12,10 @@ from app.core.security import (
     create_refresh_token,
     decode_token,
     hash_refresh_token,
+    create_password_hash,
 )
 from app.core.config import settings
 from app.domain.dtos.user_dto import UserResponseDTO
-from app.domain.entities.user import User
 from app.domain.mappers.users_mapper import UserMapper
 from app.infra.repositories.user_repository import UserRepository
 from app.infra.repositories.refresh_token_repository import RefreshTokenRepository
@@ -28,7 +29,12 @@ class TokenPair:
 
 
 class AuthService:
-    def __init__(self, users: UserRepository, refresh_tokens: RefreshTokenRepository, mapper: UserMapper):
+    def __init__(
+        self,
+        users: UserRepository,
+        refresh_tokens: RefreshTokenRepository,
+        mapper: UserMapper,
+    ):
         self.users = users
         self.refresh_tokens = refresh_tokens
         self.mapper = mapper
@@ -93,7 +99,9 @@ class AuthService:
         if hash_refresh_token(refresh_token) != stored_hash:
             raise ValueError("Refresh token mismatch")
 
-        return create_access_token(sub=str(user_id), expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        return create_access_token(
+            sub=str(user_id), expires_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     def get_user_from_access_token(self, access_token: str) -> UserResponseDTO:
         try:
@@ -115,3 +123,22 @@ class AuthService:
         user_dto = self.mapper.to_dto(user)
 
         return user_dto
+
+    def change_password(
+        self, *, user_id: int, current_password: str, new_password: str, confirm_new_password: str
+    ) -> None:
+        user = self.users.get_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        if not verify_password(current_password, user.password_hash):
+            raise ValueError("Current password is incorrect")
+
+        if not new_password == confirm_new_password:
+            raise ValueError("New password is incorrect")
+
+        user.password_hash = create_password_hash(new_password)
+        user.first_access = False
+        user.password_changed_at = datetime.now(timezone.utc)
+
+        self.users.update(user)

@@ -23,7 +23,12 @@ class UserService:
 
         user.email = str(user.email).strip().lower()
         user.cpf = "".join(ch for ch in user.cpf if ch.isdigit())
-        user.password_hash = create_password_hash(dto.password)
+
+        initial_password = user.cpf
+        user.password_hash = create_password_hash(initial_password)
+
+        user.first_access = True
+        user.password_changed_at = None
 
         self.validator.validate_create(user)
 

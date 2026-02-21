@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from pydantic import EmailStr
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, DateTime
 from sqlmodel import Field
 
 from app.domain.entities.person import Person
@@ -16,4 +18,9 @@ class User(Person, table=True):
             nullable=False,
             server_default="CUSTOMER",
         )
+    )
+    first_access: bool = Field(default=True, nullable=False)
+    password_changed_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), nullable=True),
     )
