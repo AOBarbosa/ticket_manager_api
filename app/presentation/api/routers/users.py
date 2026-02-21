@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.application.services.user_service import UserService
-from app.presentation.api.deps import get_user_service
+from app.presentation.api.deps.user_deps import get_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -19,7 +19,6 @@ def list_users(service: UserService = Depends(get_user_service)):
 @router.get("/{user_id}", response_model=UserResponseDTO)
 def get_user_by_id(user_id: int, service: UserService = Depends(get_user_service)):
     user = service.get_by_id(user_id)
-
     return user
 
 @router.put("/{user_id}", response_model=UserResponseDTO)
@@ -35,11 +34,9 @@ def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
 @router.get("/by-email", response_model=UserResponseDTO)
 def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
     user = service.get_by_email(email)
-
     return user
 
 @router.get("/by-cpf", response_model=UserResponseDTO)
 def get_user_by_email(email: str, service: UserService = Depends(get_user_service)):
     user = service.get_by_cpf(email)
-
     return user

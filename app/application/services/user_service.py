@@ -1,5 +1,6 @@
 from typing import List
 
+from app.core.security import create_password_hash
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.domain.mappers.users_mapper import UserMapper
 from app.application.validators.user_validator import UserValidator
@@ -22,6 +23,7 @@ class UserService:
 
         user.email = str(user.email).strip().lower()
         user.cpf = "".join(ch for ch in user.cpf if ch.isdigit())
+        user.password_hash = create_password_hash(dto.password)
 
         self.validator.validate_create(user)
 

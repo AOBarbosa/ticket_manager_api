@@ -22,7 +22,6 @@ class UserMapper:
             date_of_birth=dto.date_of_birth,
             cpf=dto.cpf.strip(),
             email=str(dto.email).strip().lower(),
-            password=dto.password,
         )
 
     def to_dto(self, entity: User) -> UserResponseDTO:
