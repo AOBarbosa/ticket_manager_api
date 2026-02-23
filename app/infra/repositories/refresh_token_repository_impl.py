@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from app.domain.entities.refresh_token import RefreshToken
 from app.infra.repositories.refresh_token_repository import RefreshTokenRepository

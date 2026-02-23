@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.application.services.user_service import UserService
 from app.domain.entities.user import User

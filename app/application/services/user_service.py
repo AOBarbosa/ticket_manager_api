@@ -1,11 +1,8 @@
-from typing import List
-
 from app.core.security import create_password_hash
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.domain.mappers.users_mapper import UserMapper
 from app.application.validators.user_validator import UserValidator
 from app.infra.repositories.user_repository import UserRepository
-from app.domain.entities.user import User
 
 
 class UserService:

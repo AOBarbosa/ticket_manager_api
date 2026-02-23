@@ -38,8 +38,7 @@ def create_refresh_token(*, sub: str, expires_days: int) -> str:
 def decode_token(token: str) -> dict:
     try:
         return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-    except InvalidTokenError as e:
-        # opcional: normalize erro
+    except InvalidTokenError:
         raise
 
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from app.domain.dtos.user_dto import CreateUserRequestDTO, UserResponseDTO
 from app.domain.entities.user import User
-from app.infra.repositories.user_repository import UserRepository
 
 
 class UserMapper:
