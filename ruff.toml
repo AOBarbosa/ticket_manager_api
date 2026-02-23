@@ -1,7 +1,7 @@
 line-length = 100
 target-version = "py313"
 include = ["app/**/*.py", "app/**/*.pyi"]
-extend-exclude = ["app/presentation/api/app_factory.py"]
+extend-exclude = ["app/presentation/api/app_factory.py", "app/**/__init__.py"]
 
 [format]
 quote-style = "double"
