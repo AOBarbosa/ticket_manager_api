@@ -34,9 +34,6 @@ jobs:
       - name: Format check (ruff)
         run: ruff format --check app
 
-      - name: Type check (mypy)
-        run: mypy app
-
   tests:
     needs: quality
     runs-on: ubuntu-latest

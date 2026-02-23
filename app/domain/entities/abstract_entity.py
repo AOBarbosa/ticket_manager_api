@@ -6,7 +6,7 @@ from sqlmodel import SQLModel, Field
 
 
 class AbstractEntity(SQLModel):
-    id: int | None = Field(default=None, primary_key=True)
+    id: int = Field(default=None, primary_key=True)
 
     created_at: datetime = Field(
         sa_column=Column(

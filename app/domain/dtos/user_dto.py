@@ -51,7 +51,7 @@ class CreateUserRequestDTO(BaseModel):
         description="User's email address.",
         examples=["andre.barbosa@email.com"],
     )
-    role: UserRole = Field(default="CUSTOMER", description="User's role.")
+    role: UserRole = Field(default=UserRole.CUSTOMER, description="User's role.")
 
 
 class UserResponseDTO(BaseModel):
