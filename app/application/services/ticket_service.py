@@ -5,7 +5,11 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, status
 
 from app.application.validators.ticket_validator import TicketValidator
-from app.domain.dtos.ticket_dto import CreateTicketRequestDTO, TicketResponseDTO, UpdateTicketRequestDTO
+from app.domain.dtos.ticket_dto import (
+    CreateTicketRequestDTO,
+    TicketResponseDTO,
+    UpdateTicketRequestDTO,
+)
 from app.domain.dtos.user_dto import UserResponseDTO
 from app.domain.entities.ticket import Ticket
 from app.domain.entities.ticket_audit import TicketAudit
@@ -66,7 +70,9 @@ class TicketService:
         self._ensure_can_view_ticket(actor=actor, ticket=ticket)
         return self.mapper.to_dto(ticket)
 
-    def update(self, ticket_id: int, dto: UpdateTicketRequestDTO, *, actor: UserResponseDTO) -> TicketResponseDTO:
+    def update(
+        self, ticket_id: int, dto: UpdateTicketRequestDTO, *, actor: UserResponseDTO
+    ) -> TicketResponseDTO:
         ticket = self.repository.get_by_id(ticket_id)
         self.validator.validate_found(ticket, not_found_detail="Ticket not found")
         self._ensure_active(ticket)
@@ -80,13 +86,17 @@ class TicketService:
             ticket.description = dto.description.strip()
 
         if dto.status is not None:
-            self._ensure_status_transition_allowed(actor=actor, ticket=ticket, next_status=dto.status)
+            self._ensure_status_transition_allowed(
+                actor=actor, ticket=ticket, next_status=dto.status
+            )
             previous_status = ticket.status
             ticket.status = dto.status
 
             if dto.status == TicketStatusEnum.CLOSED:
                 ticket.closed_at = datetime.now(timezone.utc)
-            elif previous_status == TicketStatusEnum.CLOSED and dto.status != TicketStatusEnum.CLOSED:
+            elif (
+                previous_status == TicketStatusEnum.CLOSED and dto.status != TicketStatusEnum.CLOSED
+            ):
                 ticket.closed_at = None
 
             if previous_status != dto.status:
@@ -123,7 +133,9 @@ class TicketService:
                         ticket_id=ticket.id,
                         actor_user_id=actor.id,
                         action="ASSIGN_AGENT",
-                        from_value=str(previous_assigned) if previous_assigned is not None else None,
+                        from_value=str(previous_assigned)
+                        if previous_assigned is not None
+                        else None,
                         to_value=str(dto.assigned_to_id),
                     )
                 )
@@ -193,7 +205,9 @@ class TicketService:
         is_assignment_change = dto.assigned_to_id is not None or dto.team_leader_id is not None
         is_priority_change = dto.priority is not None
         is_status_change = dto.status is not None
-        has_non_status_update = any(value is not None for value in (dto.title, dto.description, dto.watchers))
+        has_non_status_update = any(
+            value is not None for value in (dto.title, dto.description, dto.watchers)
+        )
 
         if actor.role == UserRole.TEAM_LEADER:
             return
@@ -248,7 +262,9 @@ class TicketService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Ticket has no close timestamp",
                 )
-            if datetime.now(timezone.utc) - ticket.closed_at > timedelta(days=self.REOPEN_WINDOW_DAYS):
+            if datetime.now(timezone.utc) - ticket.closed_at > timedelta(
+                days=self.REOPEN_WINDOW_DAYS
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Reopen window expired",

@@ -76,7 +76,9 @@ class TicketResponseDTO(BaseModel):
     priority: PriorityEnum = Field(description="Current ticket priority.")
     created_by_id: int = Field(description="User id who created the ticket.", examples=[7])
     assigned_to_id: int | None = Field(default=None, description="Assigned agent user id.")
-    team_leader_id: int | None = Field(default=None, description="Team leader user id.", examples=[3])
+    team_leader_id: int | None = Field(
+        default=None, description="Team leader user id.", examples=[3]
+    )
     watchers: list[int] = Field(
         default_factory=list,
         description="User ids following the ticket.",
