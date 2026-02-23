@@ -10,6 +10,7 @@ ALLOWED_PATHS_WHEN_FORCED = {
     "/auth/refresh",
 }
 
+
 def enforce_password_change(
     request: Request,
     current_user: Annotated[User, Depends(get_current_user)],

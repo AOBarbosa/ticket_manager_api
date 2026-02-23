@@ -73,7 +73,9 @@ def test_login_success_sets_auth_cookies(client: TestClient):
     assert response.cookies["refresh_token"].strip('"') == "refresh-for-admin@example.com"
 
 
-def test_login_invalid_credentials_returns_401(client: TestClient, fake_auth_service: FakeAuthService):
+def test_login_invalid_credentials_returns_401(
+    client: TestClient, fake_auth_service: FakeAuthService
+):
     fake_auth_service.raise_login_error = True
 
     response = client.post(
@@ -118,7 +120,9 @@ def test_logout_without_cookie_returns_204(client: TestClient):
     assert response.status_code == 204
 
 
-def test_logout_with_cookie_revokes_and_returns_204(client: TestClient, fake_auth_service: FakeAuthService):
+def test_logout_with_cookie_revokes_and_returns_204(
+    client: TestClient, fake_auth_service: FakeAuthService
+):
     client.cookies.set("refresh_token", "rt-logout")
 
     response = client.post("/auth/logout")

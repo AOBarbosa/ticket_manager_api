@@ -5,7 +5,6 @@ T = TypeVar("T")
 
 
 class AbstractRepository(ABC, Generic[T]):
-
     @abstractmethod
     def create(self, entity: T) -> T:
         raise NotImplementedError

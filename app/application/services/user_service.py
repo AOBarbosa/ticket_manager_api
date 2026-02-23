@@ -13,7 +13,9 @@ class UserService:
     Service class for managing User entities.
     """
 
-    def __init__(self, repository: UserRepository, mapper: UserMapper, validator: UserValidator) -> None:
+    def __init__(
+        self, repository: UserRepository, mapper: UserMapper, validator: UserValidator
+    ) -> None:
         self.repository = repository
         self.mapper = mapper
         self.validator = validator

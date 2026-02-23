@@ -36,6 +36,4 @@ def get_current_user(
     try:
         return auth.get_user_from_access_token(token)
     except ValueError as e:
-        raise HTTPException(
-            status_code=401, detail=f"Could not validate credentials: {e}"
-        )
+        raise HTTPException(status_code=401, detail=f"Could not validate credentials: {e}")

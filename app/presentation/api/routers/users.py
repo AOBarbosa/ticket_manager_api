@@ -30,12 +30,15 @@ def get_user_by_id(user_id: int, service: UserService = Depends(get_user_service
     user = service.get_by_id(user_id)
     return user
 
+
 @router.put("/{user_id}", response_model=UserResponseDTO)
-def update_user(user_id: int, body: CreateUserRequestDTO, service: UserService = Depends(get_user_service)):
+def update_user(
+    user_id: int, body: CreateUserRequestDTO, service: UserService = Depends(get_user_service)
+):
     user = service.update(user_id, body)
     return user
+
 
 @router.delete("/{user_id}", status_code=204)
 def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
     service.delete(user_id)
-

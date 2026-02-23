@@ -23,9 +23,7 @@ class UserValidator:
         self, user: Optional[User], *, not_found_detail: str = "Resource not found"
     ) -> None:
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=not_found_detail
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=not_found_detail)
 
     def validate_create(self, user: User) -> None:
         if not user.first_name.strip():
@@ -37,9 +35,7 @@ class UserValidator:
                 status_code=status.HTTP_400_BAD_REQUEST, detail="last_name is required"
             )
         if not user.cpf.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="cpf is required"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="cpf is required")
         if not user.date_of_birth:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -60,21 +56,15 @@ class UserValidator:
     def validate_update(self, user: User) -> None:
         existing_email = self.repo.find_by_email(user.email)
         if existing_email is not None and existing_email.id != user.id:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT, detail="email already exists"
-            )
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="email already exists")
 
         existing_cpf = self.repo.find_by_cpf(user.cpf)
         if existing_cpf is not None and existing_cpf.id != user.id:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT, detail="cpf already exists"
-            )
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="cpf already exists")
 
     def __validate_email(self, email_to_validate: str) -> None:
         if not validate_email(email_to_validate):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="email is invalid"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email is invalid")
 
         existing_email = self.repo.find_by_email(email_to_validate)
         if existing_email is not None:

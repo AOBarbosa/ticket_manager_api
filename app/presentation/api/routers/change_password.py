@@ -9,6 +9,7 @@ from app.domain.entities.user import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 @router.post("/change-password", status_code=204)
 def change_password(
     body: ChangePasswordRequest,

@@ -6,6 +6,7 @@ from app.domain.entities.user import User
 
 router = APIRouter(prefix="/me", tags=["me"])
 
+
 @router.get("", response_model=UserResponseDTO)
 def me(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user

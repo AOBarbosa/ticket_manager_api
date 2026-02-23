@@ -11,12 +11,15 @@ from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 class AccessTokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+
 class LoginResponse(BaseModel):
     must_change_password: bool
+
 
 @router.post("/login", response_model=LoginResponse)
 def login(
@@ -34,6 +37,7 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
         )
+
 
 @router.post("/refresh", response_model=AccessTokenResponse)
 def refresh(
@@ -60,6 +64,7 @@ def refresh(
         return AccessTokenResponse(access_token=new_access)
     except ValueError:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
+
 
 @router.post("/logout", status_code=204)
 def logout(

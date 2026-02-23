@@ -9,7 +9,6 @@ from app.domain.enums.roles_enum import UserRole
 
 def seed_users():
     with Session(engine) as session:
-
         users_to_create = [
             {
                 "first_name": "Andre",
@@ -50,9 +49,7 @@ def seed_users():
         ]
 
         for data in users_to_create:
-            existing = session.exec(
-                select(User).where(User.email == data["email"])
-            ).first()
+            existing = session.exec(select(User).where(User.email == data["email"])).first()
 
             if existing:
                 print(f"User {data['email']} already exists.")

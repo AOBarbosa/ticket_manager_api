@@ -60,7 +60,9 @@ class AuthService:
 
         self.refresh_tokens.upsert_for_user(user.id, hash_refresh_token(refresh))
 
-        return TokenPair(access_token=access, refresh_token=refresh, must_change_password=user.first_access)
+        return TokenPair(
+            access_token=access, refresh_token=refresh, must_change_password=user.first_access
+        )
 
     def logout(self, refresh_token: str) -> None:
         try:

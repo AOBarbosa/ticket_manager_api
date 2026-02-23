@@ -6,7 +6,6 @@ from app.infra.repositories.user_repository import UserRepository
 
 
 class UserMapper:
-
     def to_entity(self, dto: CreateUserRequestDTO) -> User:
         """
         Maps CreateUserRequestDTO -> User (SQLModel entity).
