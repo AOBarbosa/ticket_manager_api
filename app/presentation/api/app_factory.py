@@ -6,6 +6,7 @@ from app.presentation.api.routers.protected import protected_router
 from app.presentation.api.routers.users import router as users_router
 from app.presentation.api.routers.auth import router as auth_router
 from app.presentation.api.routers.me import router as me_router
+from app.presentation.api.routers.ticket_router import router as ticket_router
 
 
 @asynccontextmanager
@@ -21,6 +22,7 @@ def create_app() -> FastAPI:
 
     protected_router.include_router(users_router)
     protected_router.include_router(me_router)
+    protected_router.include_router(ticket_router)
 
     app.include_router(protected_router)
 
